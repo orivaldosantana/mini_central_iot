@@ -1,7 +1,12 @@
 import './App.css'
+import Header from './components/header'
 
 function App() {
-  return <main>Mini Central IoT</main>
+  return (
+    <main>
+      <Header title="Mini Central IoT" />
+    </main>
+  )
 }
 
 export default App
