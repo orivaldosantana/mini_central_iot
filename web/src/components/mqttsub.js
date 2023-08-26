@@ -24,25 +24,47 @@ const mqttOptions = {
   }
 }
 
+const soilHumidityTopic = 'ORIVA/jardim/umidadesolo'
+const temperatureTopic = 'ORIVA/casa/temperatura'
+const lightSensorTopic = 'ORIVA/casa/luminosidade'
+
 export default function MQTTSub() {
-  const [mqttmsgs, setMqttmsgs] = useState('?')
+  const [msgSoil, setMsgSoil] = useState('?')
+  const [msgTemperature, setMsgTemperature] = useState('?')
+  const [msgLight, setMsgLight] = useState('?')
 
   useEffect(() => {
     console.log('Connecting mqtt client!')
     const client = mqtt.connect(host, mqttOptions)
     client.on('connect', () => {
-      client.subscribe('CASA/umidadesolo')
+      client.subscribe(soilHumidityTopic)
+      client.subscribe(temperatureTopic)
+      client.subscribe(lightSensorTopic)
     })
 
     client.on('message', (topic, payload, packet) => {
-      setMqttmsgs(payload.toString())
-      console.log('New message from ' + topic + ': ' + payload.toString())
+      if (topic === soilHumidityTopic) {
+        setMsgSoil(payload.toString())
+        console.log('New message from ' + topic + ': ' + payload.toString())
+      }
+      if (topic === temperatureTopic) {
+        setMsgTemperature(payload.toString())
+        console.log('New message from ' + topic + ': ' + payload.toString())
+      }
+      if (topic === lightSensorTopic) {
+        setMsgLight(payload.toString())
+        console.log('New message from ' + topic + ': ' + payload.toString())
+      }
     })
-  }, [mqttmsgs])
+  }, [msgSoil, msgTemperature, msgLight])
 
   return (
     <div>
-      <div>Umidade do solo: {mqttmsgs && mqttmsgs} (max: 4095) </div>
+      <div>
+        <p> Umidade do solo: {msgSoil && msgSoil} (max: 4095) </p>
+        <p> Tempeartura: {msgTemperature && msgTemperature} </p>
+        <p> Iluminação: {msgLight && msgLight} </p>
+      </div>
     </div>
   )
 }
