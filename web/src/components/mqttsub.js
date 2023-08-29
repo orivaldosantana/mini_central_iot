@@ -70,7 +70,6 @@ export default function MQTTSub() {
       <div>
         <p> Umidade do solo: {msgSoil && msgSoil} (max: 4095) </p>
         <p>
-          {' '}
           Umidade do ambiente: {msgEnvHumidity && msgEnvHumidity} % (max: 100%){' '}
         </p>
         <p> Tempeartura: {msgTemperature && msgTemperature} C </p>
