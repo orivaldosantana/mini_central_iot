@@ -3,10 +3,11 @@
 import time
 from umqttsimple import MQTTClient
 import ubinascii
-import machine
+from machine import Pin, unique_id 
 import micropython
 import network
 import esp
+import dht 
 esp.osdebug(None)
 import gc
 gc.collect()
@@ -25,12 +26,11 @@ server_port = conf["server_port"]
 mqtt_user = conf["mqtt_user"]
 mqtt_password = conf["mqtt_password"]
 
-client_id = ubinascii.hexlify(machine.unique_id())
-topic_sub = b'TESTE/LEDRGB/input'
-topic_pub = b'TESTE/UMIDADE/output'
+client_id = ubinascii.hexlify(unique_id())
+
 
 last_message = 0
-message_interval = 5
+message_interval = 20
 counter = 0
 
 station = network.WLAN(network.STA_IF)
