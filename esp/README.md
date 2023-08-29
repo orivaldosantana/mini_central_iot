@@ -9,7 +9,7 @@ Pinos:
 | -   | GND     |
 | +   | GPIO 02 |
 
-## Sensor de Temperatura e umidade do ar
+## Sensor de temperatura e umidade do ar
 
 Pinos:
 
@@ -18,3 +18,13 @@ Pinos:
 | -              | GND   |
 | +              | 3.3v  |
 | S              | D14   |
+
+## Sensor LDR
+
+Pinos:
+
+| Sensor de LDR | ESP32 |
+| ------------- | ----- |
+| -             | GND   |
+| +             | 3.3v  |
+| S             | D33   |

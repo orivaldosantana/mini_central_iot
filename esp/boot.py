@@ -3,7 +3,7 @@
 import time
 from umqttsimple import MQTTClient
 import ubinascii
-from machine import Pin, unique_id 
+from machine import Pin, unique_id, ADC  
 import micropython
 import network
 import esp
@@ -30,7 +30,7 @@ client_id = ubinascii.hexlify(unique_id())
 
 
 last_message = 0
-message_interval = 20
+message_interval = 60
 counter = 0
 
 station = network.WLAN(network.STA_IF)

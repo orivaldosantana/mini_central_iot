@@ -5,9 +5,12 @@
 # Code for Pin 2 
 pin_led =  Pin(2, Pin.OUT)
 
-
 ## DHT11 Sensor
 sensor_dht11 = dht.DHT11(Pin(14)) 
+
+## LDR Sensor 
+ldr = ADC(Pin(33))
+ldr.atten(ADC.ATTN_11DB)   
 
 
 topic_sub_led = b'ORIVA/casa/controleLED'
@@ -54,8 +57,10 @@ while True:
     client.check_msg()
     if (time.time() - last_message) > message_interval:      
       msg = b'Time #%d' % counter
-      msg_ldr = b'LDR #%d' % counter
-
+      client.publish(topic_pub_log, msg)   
+      # LDR Sensor 
+      ldr_value = ldr.read()
+      msg_ldr = b'%d' % ldr_value
       client.publish(topic_pub_ldr, msg_ldr)  
       # Temperature and Humidity Sensor readings 
       sensor_dht11.measure() 
@@ -65,7 +70,7 @@ while True:
       humi = sensor_dht11.humidity()
       msg_humi = b'%d'%humi  
       client.publish(topic_pub_humi, msg_humi)   
-
+      #Time counter 
       last_message = time.time()
       counter += 1
   except OSError as e:
