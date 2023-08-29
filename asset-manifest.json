@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/mini_central_iot/static/css/main.f7f0b74a.css",
+    "main.js": "/mini_central_iot/static/js/main.c4d9c489.js",
+    "index.html": "/mini_central_iot/index.html",
+    "main.f7f0b74a.css.map": "/mini_central_iot/static/css/main.f7f0b74a.css.map",
+    "main.c4d9c489.js.map": "/mini_central_iot/static/js/main.c4d9c489.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.f7f0b74a.css",
+    "static/js/main.c4d9c489.js"
+  ]
+}
