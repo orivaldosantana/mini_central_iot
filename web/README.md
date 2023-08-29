@@ -25,3 +25,4 @@ $ yarn start
 - [How to use MQTT in the React project](https://www.emqx.com/en/blog/how-to-use-mqtt-in-react)
 - [Pacote MQTT précompilado](https://www.npmjs.com/package/precompiled-mqtt)
 - [Projeto de App React para ler um sensor](https://github.com/orivaldosantana/react_sensor_umidade_solo/blob/main/src/components/mqttsub.jsx)
+- [Como fazer deploy de aplicações ReactJS no Github-Pages](https://github.com/manoelacs/How-To-Deploy-React-App-in-Github-Pages)
