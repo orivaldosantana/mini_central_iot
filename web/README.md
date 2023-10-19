@@ -8,6 +8,11 @@ O pacote MQTT instalado foi a opção pré-compilada, no dia 22/08/2023, o pacot
 $ yarn add precompiled-mqtt
 ```
 
+Para variáveis de ambiente 
+```bash
+$ yarn add dotenv 
+```
+
 ## Execução
 
 Na primeira vez basta executar `yarn` para instalar os pacotes e gerar os arquivos na pasta `node_modules` automaticamente.
