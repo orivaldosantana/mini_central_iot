@@ -35,7 +35,7 @@ def sub_cb(topic, msg):
 
 def connect_and_subscribe():
   global client_id, mqtt_server, topic_sub_led, server_port, mqtt_user, mqtt_password
-  client = MQTTClient(client_id, mqtt_server, server_port)
+  client = MQTTClient(client_id, mqtt_server, server_port, mqtt_user, mqtt_password))
   client.set_callback(sub_cb)
   client.connect()
   client.subscribe(topic_sub_led)
