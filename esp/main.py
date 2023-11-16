@@ -1,5 +1,4 @@
 # Complete project details at https://RandomNerdTutorials.com
-# https://randomnerdtutorials.com/micropython-esp32-deep-sleep-wake-up-sources/ 
 import machine
 import time
 
@@ -71,6 +70,16 @@ while True:
     client.check_msg()
     if (time.time() - last_message) > message_interval:
       last_message = time.time()
+      # Blink LED for indicating the sensors readings
+      pin_led.off()
+      time.sleep(0.5)
+      pin_led.on()
+      time.sleep(0.5)
+      pin_led.off()
+      time.sleep(0.5)
+      pin_led.on()
+      time.sleep(0.5)
+      pin_led.off()
       msg = b'Time #%d' % counter
       client.publish(topic_pub_log, msg)   
       # LDR Sensor 
