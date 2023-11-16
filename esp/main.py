@@ -1,4 +1,5 @@
 # Complete project details at https://RandomNerdTutorials.com
+# https://randomnerdtutorials.com/micropython-esp32-deep-sleep-wake-up-sources/ 
 import machine
 import time
 
