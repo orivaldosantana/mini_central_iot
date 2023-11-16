@@ -21,17 +21,10 @@ conf_file.close()
 
 ssid = conf["ssid"]
 password = conf["password"]
-mqtt_server = conf["mqtt_server"]
-server_port = conf["server_port"] 
-mqtt_user = conf["mqtt_user"]
-mqtt_password = conf["mqtt_password"]
+
 
 client_id = ubinascii.hexlify(unique_id())
 
-
-last_message = 0
-message_interval = 60
-counter = 0
 
 station = network.WLAN(network.STA_IF)
 
@@ -46,4 +39,5 @@ if not station.isconnected():
 
     print('Connection successful')
     print(station.ifconfig())
+
 

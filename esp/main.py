@@ -1,4 +1,17 @@
 # Complete project details at https://RandomNerdTutorials.com
+import machine
+import time
+
+mqtt_server = conf["mqtt_server"]
+server_port = conf["server_port"] 
+mqtt_user = conf["mqtt_user"]
+mqtt_password = conf["mqtt_password"]
+
+
+
+last_message = 0
+message_interval = 60 # segundos
+counter = 0
 
 
 ## LED
@@ -35,7 +48,7 @@ def sub_cb(topic, msg):
 
 def connect_and_subscribe():
   global client_id, mqtt_server, topic_sub_led, server_port, mqtt_user, mqtt_password
-  client = MQTTClient(client_id, mqtt_server, server_port, mqtt_user, mqtt_password))
+  client = MQTTClient(client_id, mqtt_server, server_port, mqtt_user, mqtt_password)
   client.set_callback(sub_cb)
   client.connect()
   client.subscribe(topic_sub_led)
@@ -55,28 +68,44 @@ except OSError as e:
 while True:
   try:
     client.check_msg()
-    if (time.time() - last_message) > message_interval:      
+    if (time.time() - last_message) > message_interval:
+      last_message = time.time()
       msg = b'Time #%d' % counter
       client.publish(topic_pub_log, msg)   
       # LDR Sensor 
       ldr_value = ldr.read()
       msg_ldr = b'%d' % ldr_value
-      client.publish(topic_pub_ldr, msg_ldr)  
-      # Temperature and Humidity Sensor readings 
-      sensor_dht11.measure() 
-      temp = sensor_dht11.temperature()
-      msg_temp = b'%3.1f'%temp 
-      client.publish(topic_pub_temp, msg_temp)  
-      humi = sensor_dht11.humidity()
-      msg_humi = b'%d'%humi  
-      client.publish(topic_pub_humi, msg_humi)   
-      #Time counter 
-      last_message = time.time()
+      client.publish(topic_pub_ldr, msg_ldr)
+      # Temperature and Humidity Sensor readings
+      tempError = False
+      try: 
+        sensor_dht11.measure()        
+      except OSError as e:
+        print(e)
+        print("DHT11 measurement error!")
+        tempError = True        
+      if not tempError:  
+        temp = sensor_dht11.temperature()
+        msg_temp = b'%3.1f'%temp 
+        client.publish(topic_pub_temp, msg_temp)
+        humi = sensor_dht11.humidity()
+        msg_humi = b'%d'%humi
+        client.publish(topic_pub_humi, msg_humi)
+      #Time counter         
       counter += 1
+      if counter > 10: # reinicia depois um tempo 
+        counter = 0
+        print("Restart counter!")
+        time.sleep(10)
+        print("Starting deep sleep!") 
+        machine.deepsleep(1000*60*50) # 50 min
+        machine.reset()          
+
   except OSError as e:
     restart_and_reconnect()
 
 
 
+ 
 
 
