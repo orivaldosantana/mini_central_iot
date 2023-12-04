@@ -5,23 +5,25 @@ import mqtt from 'precompiled-mqtt'
 import { useState } from 'react'
 import { useEffect } from 'react'
 
-const clientId = 'mqttjs_' + Math.random().toString(16).substr(2, 8)
+const clientId = `mqttjs_${parseInt(Math.random() * 1000000)}`
 
-const host = 'wss://broker.emqx.io:8084/mqtt'
+const host = 'wss://mqtt.ect.ufrn.br:8083'
 const mqttOptions = {
   keepalive: 60,
   clientId: clientId,
   protocolId: 'MQTT',
   protocolVersion: 4,
   clean: true,
-  reconnectPeriod: 1000,
+  reconnectPeriod: 5000,
   connectTimeout: 30 * 1000,
   will: {
     topic: 'WillMsg',
     payload: 'Connection Closed abnormally..!',
     qos: 0,
     retain: false
-  }
+  },
+  username: 'mqtt',
+  password: 'lar_mqtt'
 }
 
 const soilHumidityTopic = 'ORIVA/jardim/umidadesolo'
@@ -39,6 +41,7 @@ export default function MQTTSub() {
     console.log('Connecting mqtt client!')
     const client = mqtt.connect(host, mqttOptions)
     client.on('connect', () => {
+      console.log('Connected!')
       client.subscribe(soilHumidityTopic)
       client.subscribe(temperatureTopic)
       client.subscribe(lightSensorTopic)

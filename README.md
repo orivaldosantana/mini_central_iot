@@ -6,3 +6,9 @@ O código está divido em duas partes:
 
 - Web: para página web
 - Esp: para o microcontrolador
+
+## Execução 
+
+``` 
+yarn 
+```
