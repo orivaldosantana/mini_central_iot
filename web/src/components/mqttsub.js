@@ -35,12 +35,18 @@ export default function MQTTSub() {
   const [msgLight, setMsgLight] = useState('?')
   const [msgEnvHumidity, setMsgEnvHumidity] = useState('?')
   const [connectStatus, setConnectStatus] = useState('Disconnected')
+  const [inputHost, setInputHost] = useState()
 
   const [client, setClient] = useState(null)
   const mqttConnect = () => {
     setConnectStatus('Connecting')
-    console.log('host: ' + host)
-    setClient(mqtt.connect(host, mqttOptions))
+    console.log('host: ' + inputHost)
+    try {
+      setClient(mqtt.connect(inputHost, mqttOptions))
+    } catch (error) {
+      console.error(error)
+      alert('Connection error!')
+    }
   }
 
   useEffect(() => {
@@ -99,6 +105,15 @@ export default function MQTTSub() {
         <p> Iluminação: {msgLight && msgLight} (max: 4095) </p>
       </div>
       <div>
+        <input
+          type="text"
+          id="host"
+          name="host"
+          placeholder="Digite o host"
+          onChange={e => {
+            setInputHost(e.target.value)
+          }}
+        />
         <button onClick={mqttConnect}> Conectar </button>
       </div>
     </div>
