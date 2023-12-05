@@ -7,7 +7,7 @@ import { useEffect } from 'react'
 
 const clientId = 'mqttjs_' + Math.random().toString(16).substr(2, 8)
 
-const host = 'wss://broker.emqx.io:8084/mqtt'
+//const host = 'wss://broker.emqx.io:8084/mqtt'
 const mqttOptions = {
   keepalive: 60,
   clientId: clientId,
