@@ -1,29 +1,27 @@
 import React from 'react'
 
-import mqtt from 'precompiled-mqtt'
+import mqtt from 'mqtt'
 
 import { useState } from 'react'
 import { useEffect } from 'react'
 
-const clientId = `mqttjs_${parseInt(Math.random() * 1000000)}`
+const clientId = 'mqttjs_' + Math.random().toString(16).substr(2, 8)
 
-const host = 'wss://mqtt.ect.ufrn.br:8083'
+const host = 'wss://broker.emqx.io:8084/mqtt'
 const mqttOptions = {
   keepalive: 60,
   clientId: clientId,
   protocolId: 'MQTT',
-  protocolVersion: 4,
+  protocolVersion: 5,
   clean: true,
-  reconnectPeriod: 5000,
+  reconnectPeriod: 3000,
   connectTimeout: 30 * 1000,
   will: {
     topic: 'WillMsg',
     payload: 'Connection Closed abnormally..!',
     qos: 0,
     retain: false
-  },
-  username: 'mqtt',
-  password: 'lar_mqtt'
+  }
 }
 
 const soilHumidityTopic = 'ORIVA/jardim/umidadesolo'
@@ -36,38 +34,60 @@ export default function MQTTSub() {
   const [msgTemperature, setMsgTemperature] = useState('?')
   const [msgLight, setMsgLight] = useState('?')
   const [msgEnvHumidity, setMsgEnvHumidity] = useState('?')
+  const [connectStatus, setConnectStatus] = useState('Disconnected')
+
+  const [client, setClient] = useState(null)
+  const mqttConnect = () => {
+    setConnectStatus('Connecting')
+    console.log('host: ' + host)
+    setClient(mqtt.connect(host, mqttOptions))
+  }
 
   useEffect(() => {
-    console.log('Connecting mqtt client!')
-    const client = mqtt.connect(host, mqttOptions)
-    client.on('connect', () => {
-      console.log('Connected!')
-      client.subscribe(soilHumidityTopic)
-      client.subscribe(temperatureTopic)
-      client.subscribe(lightSensorTopic)
-      client.subscribe(environmentHumidityTopic)
-    })
+    if (client) {
+      console.log('Connecting mqtt client!')
+      //console.log(client)
+      client.on('connect', () => {
+        setConnectStatus('Connected')
+        client.subscribe(soilHumidityTopic, { qos: 0 }, error => {
+          if (error) {
+            console.log('Subscribe to topic error', error)
+            return
+          }
+        })
+        client.subscribe(temperatureTopic)
+        client.subscribe(lightSensorTopic)
+        client.subscribe(environmentHumidityTopic)
+      })
+      client.on('error', err => {
+        console.error('Connection error: ', err)
+        client.end()
+      })
+      client.on('reconnect', () => {
+        console.log('Reconnecting... \nClient ' + clientId)
+      })
+      client.on('message', (topic, message) => {
+        if (topic === soilHumidityTopic) {
+          setMsgSoil(message.toString())
+          console.log('New message from ' + topic + ': ' + message.toString())
+        }
+        if (topic === temperatureTopic) {
+          setMsgTemperature(message.toString())
+          console.log('New message from ' + topic + ': ' + message.toString())
+        }
+        if (topic === lightSensorTopic) {
+          setMsgLight(message.toString())
+          console.log('New message from ' + topic + ': ' + message.toString())
+        }
+        if (topic === environmentHumidityTopic) {
+          setMsgEnvHumidity(message.toString())
+          console.log('New message from ' + topic + ': ' + message.toString())
+        }
+      })
+    }
+  }, [client])
 
-    client.on('message', (topic, payload, packet) => {
-      if (topic === soilHumidityTopic) {
-        setMsgSoil(payload.toString())
-        console.log('New message from ' + topic + ': ' + payload.toString())
-      }
-      if (topic === temperatureTopic) {
-        setMsgTemperature(payload.toString())
-        console.log('New message from ' + topic + ': ' + payload.toString())
-      }
-      if (topic === lightSensorTopic) {
-        setMsgLight(payload.toString())
-        console.log('New message from ' + topic + ': ' + payload.toString())
-      }
-      if (topic === environmentHumidityTopic) {
-        setMsgEnvHumidity(payload.toString())
-        console.log('New message from ' + topic + ': ' + payload.toString())
-      }
-    })
-  }, [msgSoil, msgTemperature, msgLight])
-
+  console.log(connectStatus)
   return (
     <div>
       <div>
@@ -77,6 +97,9 @@ export default function MQTTSub() {
         </p>
         <p> Tempeartura: {msgTemperature && msgTemperature} C </p>
         <p> Iluminação: {msgLight && msgLight} (max: 4095) </p>
+      </div>
+      <div>
+        <button onClick={mqttConnect}> Conectar </button>
       </div>
     </div>
   )
